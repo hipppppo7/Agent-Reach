@@ -61,7 +61,7 @@ Agent Reach is installed with uv. A copy installed another way (pip or pipx, as 
 A new version broke something? Go back to the previous release, then line the tools and skill up with it:
 
 ```bash
-uv tool install --force https://github.com/Panniantong/Agent-Reach/archive/refs/tags/v<previous>.zip
+uv tool install --force https://github.com/hipppppo7/Agent-Reach/archive/refs/tags/v<previous>.zip
 agent-reach update --sync-only
 ```
 

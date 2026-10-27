@@ -7,6 +7,20 @@ All notable changes to this project will be documented in this file.
 ---
 
 
+## [1.6.0.1] - 2026-10-27
+
+English (fork hipppppo7/Agent-Reach):
+
+- Japanese and English localization on top of upstream 1.6.0. The skill, its references and the installation report come in zh / en / ja.
+- Language: `AGENT_REACH_LANG` (`ja` / `en` / `zh`), then `LC_ALL` / `LC_MESSAGES` / `LANG`, then the OS locale; English if none match (upstream defaulted to Chinese).
+- `agent-reach update` follows this fork's releases, so the translations are not overwritten by upstream.
+
+日本語（フォーク hipppppo7/Agent-Reach）：
+
+- 本家 1.6.0 に日本語・英語化を足した版。Skill・参考資料・インストール時のレポートが中国語／英語／日本語で出る。
+- 言語は `AGENT_REACH_LANG`（`ja` / `en` / `zh`）→ `LC_ALL` / `LC_MESSAGES` / `LANG` → OS の言語設定の順で決まる。どれにも当たらなければ英語（本家は中国語）。
+- `agent-reach update` はこのフォークのリリースを見るので、本家の更新で翻訳が上書きされない。
+
 ## [1.6.0] - 2026-10-23
 
 中文：

@@ -17,7 +17,8 @@ from agent_reach.utils.paths import (
 
 from . import state
 
-REPO = "Panniantong/Agent-Reach"
+# This fork (English/Japanese) publishes its own releases so `update` keeps the translations.
+REPO = "hipppppo7/Agent-Reach"
 FETCH_TIMEOUT = 10.0
 NOTES_MAX = 2000
 

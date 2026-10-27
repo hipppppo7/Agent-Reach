@@ -314,15 +314,16 @@ def _cmd_management(head: str, args: Sequence[str]) -> int:
         return _bad_input(None, head, str(exc))
     if head == "setup":
         if ns.text:
+            from .onboarding import text
             try:
                 result = manage.setup()
             except ReachError as err:
-                sys.stdout.write(f"安装未完成：{err.code} {err.message}\n{err.hint or ''}\n")
+                sys.stdout.write(text("setup_failed", code=err.code, message=err.message) + f"\n{err.hint or ''}\n")
                 return 1
             sys.stdout.write(result['installation_report']['markdown'])
             report = result['installation_report']
             if report.get('path'):
-                sys.stdout.write(f"\n完整报告已保存：{report['path']}\n")
+                sys.stdout.write("\n" + text("report_saved", path=report['path']) + "\n")
             if report.get('write_error'):
                 sys.stdout.write(f"\n{report['write_error']}\n")
             return 0 if all(row['ok'] for row in result['default_channels']) else 1

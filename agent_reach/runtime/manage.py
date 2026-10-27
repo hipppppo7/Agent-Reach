@@ -405,24 +405,27 @@ def skill_dir() -> Path:
 
 
 def _skill_lang() -> str:
-    for var in ("AGENT_REACH_LANG", "LC_ALL", "LC_MESSAGES", "LANG"):
-        v = os.environ.get(var, "").strip().lower()
-        if v.startswith("en"):
-            return "en"
-    return "zh"
+    from agent_reach.utils.lang import current_lang
+    return current_lang()
+
+
+_SKILL_FILES = {"zh": ("SKILL.md", "references"), "en": ("SKILL_en.md", "references_en"),
+                "ja": ("SKILL_ja.md", "references_ja")}
 
 
 def render_skill(lang: Optional[str] = None) -> str:
     from importlib.resources import files
 
+    from .onboarding import _TEXT
+
     lang = lang or _skill_lang()
-    template = files("agent_reach").joinpath("skill").joinpath("SKILL_en.md" if lang == "en" else "SKILL.md").read_text("utf-8")
+    template = files("agent_reach").joinpath("skill").joinpath(_SKILL_FILES[lang][0]).read_text("utf-8")
     labels = {"default": "default", "optional": "optional", "experimental": "experimental"}
     rows = ["| channel | level | actions | login |", "|---|---|---|---|"]
     for ch in _channels():
         login = f"`agent-reach login {ch.name}`" if _has_login(ch) else "-"
         if ch.name == "reddit":
-            login = "浏览器路径按需" if lang == "zh" else "Browser path only, if required"
+            login = _TEXT[lang]["reddit_login"]
         rows.append(f"| {ch.name} | {labels[ch.level]} | {', '.join(a.name for a in ch.actions)} | {login} |")
     return template.replace("{{CHANNEL_TABLE}}", "\n".join(rows)).replace("{{VERSION}}", __version__)
 
@@ -481,7 +484,7 @@ def _write_copy(target: Path, text: str) -> None:
     references = target / "references"
     ensure_no_symlink_path(references, "skill references")
     references.mkdir(exist_ok=True)
-    for source in files("agent_reach").joinpath("skill").joinpath("references").iterdir():
+    for source in files("agent_reach").joinpath("skill").joinpath(_SKILL_FILES[_skill_lang()][1]).iterdir():
         if source.is_file() and source.name.endswith(".md"):
             atomic_write_private_text(references / source.name, source.read_text("utf-8"))
             written.append(str(references / source.name))
@@ -683,7 +686,7 @@ def setup() -> dict:
             added.append({"channel": ch.name, "ok": False, "tools": [],
                           "error": {"code": err.code, "message": err.message, "hint": err.hint}})
     optional = [_optional_entry(c) for c in _channels() if not is_added(c, data)]
-    from .onboarding import capability_summary, installation_report
+    from .onboarding import capability_summary, installation_report, text
 
     registered = _channels()
     current = [{"channel": c.name, **channel_status(c, state.load())} for c in registered]
@@ -708,7 +711,7 @@ def setup() -> dict:
         report["path"] = str(atomic_write_private_text(state.root() / "installation-report.md", markdown))
     except (OSError, PrivatePathError):
         # The receipt remains in stdout even if its local copy cannot be saved.
-        report["write_error"] = "安装报告未能保存；完整表格仍在 installation_report.markdown。"
+        report["write_error"] = text("report_write_error")
     result["installation_report"] = report
     if migration:
         state.mutate(lambda saved: saved.__setitem__("migration_reported", True))

@@ -122,3 +122,9 @@ def isolated_xueqiu_cookie_jar(monkeypatch):
     monkeypatch.setattr(xueqiu, "_cookies_initialized", False)
     yield
     xueqiu._cookie_jar.clear()
+
+
+@pytest.fixture(autouse=True)
+def upstream_language(monkeypatch):
+    """Upstream tests assert the Chinese texts; the fork's own tests override this."""
+    monkeypatch.setenv("AGENT_REACH_LANG", "zh")

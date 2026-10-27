@@ -21,7 +21,7 @@
 </p>
 
 <p align="center">
-  <a href="#快速上手">快速开始</a> · <a href="docs/README_en.md">English</a>
+  <a href="#快速上手">快速开始</a> · <a href="docs/README_en.md">English</a> · <a href="docs/README_ja.md">日本語</a>
 </p>
 
 <p align="center">
