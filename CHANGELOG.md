@@ -7,6 +7,11 @@ All notable changes to this project will be documented in this file.
 ---
 
 
+## [1.6.0.2] - 2026-10-27
+
+- Fix `CERTIFICATE_VERIFY_FAILED` on Windows for GitHub (update check, OpenCLI download, HTTP channels): urllib now trusts the OS store plus certifi's bundle. Windows stores that hold only the cross-signed USERTrust ECC root could not verify GitHub's Sectigo E46 chain.
+- Windows で GitHub への接続（更新の確認、OpenCLI のダウンロード、HTTP のチャネル）が証明書エラーで落ちるのを直した。OS の証明書ストアに加えて certifi の証明書リストも使う。
+
 ## [1.6.0.1] - 2026-10-27
 
 English (fork hipppppo7/Agent-Reach):

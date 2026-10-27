@@ -38,7 +38,8 @@ def fetch_latest(timeout: float = FETCH_TIMEOUT) -> dict:
     """{latest, notes} of the latest GitHub release. Raises on network errors."""
     req = urllib.request.Request(f"https://api.github.com/repos/{REPO}/releases/latest",
                                  headers={"User-Agent": "agent-reach", "Accept": "application/vnd.github+json"})
-    with urllib.request.urlopen(req, timeout=timeout) as resp:
+    from agent_reach.utils.net import ssl_context
+    with urllib.request.urlopen(req, timeout=timeout, context=ssl_context()) as resp:
         rel = json.loads(resp.read())
     return {"latest": str(rel.get("tag_name", "")).lstrip("v"), "notes": (rel.get("body") or "")[:NOTES_MAX]}
 

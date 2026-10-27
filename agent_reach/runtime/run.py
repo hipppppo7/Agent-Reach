@@ -11,6 +11,7 @@ import urllib.request
 from pathlib import Path
 from typing import Mapping, Optional, Sequence
 
+from agent_reach.utils.net import ssl_context
 from agent_reach.utils.process import utf8_subprocess_env
 
 from .result import NEED_SETUP, TIMEOUT, ReachError, _clean
@@ -120,7 +121,7 @@ def http_request(
     merged = {"User-Agent": "agent-reach"}
     merged.update(headers or {})
     req = urllib.request.Request(url, data=data, headers=merged)
-    with urllib.request.urlopen(req, timeout=max(timeout, 0.1)) as resp:
+    with urllib.request.urlopen(req, timeout=max(timeout, 0.1), context=ssl_context()) as resp:
         body = resp.read(max_bytes + 1)
         declared = getattr(resp, "headers", {}).get("Content-Length", "")
         if isinstance(declared, str) and declared.strip().isdigit() and len(body) <= max_bytes:

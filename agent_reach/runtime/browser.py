@@ -26,6 +26,7 @@ import zipfile
 from pathlib import Path
 from typing import Callable, Iterator, List, Optional
 
+from agent_reach.utils.net import ssl_context
 from agent_reach.utils.paths import (
     PrivatePathError,
     atomic_write_private_text,
@@ -241,13 +242,13 @@ def wait_for(check: Callable[[], bool], seconds: float, interval: float = 1.0) -
 def _fetch(url: str, timeout: float = 30.0) -> bytes:
     """GET `url` (honours the OS / env proxy settings)."""
     req = urllib.request.Request(url, headers={"User-Agent": _USER_AGENT})
-    with urllib.request.urlopen(req, timeout=timeout) as resp:
+    with urllib.request.urlopen(req, timeout=timeout, context=ssl_context()) as resp:
         return resp.read()
 
 
 def _download(url: str, dest: Path, timeout: float = 60.0) -> None:
     req = urllib.request.Request(url, headers={"User-Agent": _USER_AGENT})
-    with urllib.request.urlopen(req, timeout=timeout) as resp, open(dest, "wb") as out:
+    with urllib.request.urlopen(req, timeout=timeout, context=ssl_context()) as resp, open(dest, "wb") as out:
         shutil.copyfileobj(resp, out, 1 << 20)
 
 
